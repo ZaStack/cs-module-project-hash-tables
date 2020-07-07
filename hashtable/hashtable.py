@@ -22,7 +22,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
-        self.data = [0] * capacity
+        self.data = [None] * capacity
         self.entries = 0
 
 
@@ -57,10 +57,11 @@ class HashTable:
 
         offset_basis = 14695981039346656037 
         fnv_prime = 1099511628211
-        hash_value = offset_basis
-        key_utf8 = key.encode()
-        for byte in key_utf8:
-            hash_value = hash_value ^ byte
+        seed = 0
+        hash_value = offset_basis + seed
+
+        for byte in key:
+            hash_value = hash_value ^ ord(byte)
             hash_value = hash_value * fnv_prime
         return hash_value
 
