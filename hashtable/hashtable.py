@@ -20,10 +20,10 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity=MIN_CAPACITY):
         self.capacity = capacity
         self.data = [None] * capacity
-        self.entries = 0
+        self.count = 0
 
 
     def get_num_slots(self):
@@ -36,7 +36,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -45,7 +45,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return self.count / self.capacity
 
 
     def fnv1(self, key):
@@ -58,12 +58,12 @@ class HashTable:
         offset_basis = 14695981039346656037 
         fnv_prime = 1099511628211
         seed = 0
-        hash_value = offset_basis + seed
+        hash = offset_basis + seed
 
         for byte in key:
-            hash_value = hash_value ^ ord(byte)
-            hash_value = hash_value * fnv_prime
-        return hash_value
+            hash = hash ^ ord(byte)
+            hash = hash * fnv_prime
+        return hash
 
 
     def djb2(self, key):
@@ -72,10 +72,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        hash_value = 5381
+        hash = 5381
         for char in key:
-            hash_value = (hash_value * 33) + ord(char)
-        return hash_value
+            hash = (hash * 33) + ord(char)
+        return hash
 
 
     def hash_index(self, key):
@@ -99,17 +99,16 @@ class HashTable:
         new_entry = HashTableEntry(key, value)
 
         if self.data[index] is None:
-            self.data[index] = HashTableEntry(key, value)
-            self.entries += 1
+            self.data[index] = new_entry
+            self.count += 1
         else:
             while current:
                 if current.key is key:
                     current.value = value
-                    return
                 previous = current
                 current = current.next
             previous.next = new_entry
-            self.entries += 1
+            self.count += 1
 
     def delete(self, key):
         """
@@ -126,6 +125,7 @@ class HashTable:
         if current.key is key:
             current.value = None
             current = None
+            self.count -= 1
         elif current is None:
             print('Could not find that key')
         else:
@@ -135,6 +135,7 @@ class HashTable:
                 if current.key is key:
                     current.value = None
                     previous.next = None
+                    self.count -= 1
                     return
 
 
@@ -168,8 +169,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        old_table = self.data
+        self.capacity = new_capacity
+        self.data = [None] * new_capacity
 
+        for entry in range(len(old_table)):
+            old = old_table[entry]
+            if old:
+                while old:
+                    if old.key:
+                        self.put(old.key, old.value)
+                        old = old.next
 
 
 if __name__ == "__main__":
@@ -206,3 +216,17 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     print("")
+
+
+# new_table = HashTable(new_capacity)
+        
+#         for entry in self.data:
+#             if entry:
+#                 new_table.put(entry.key, entry.value)
+#                 if entry.next:
+#                     current = entry
+#                     while current.next:
+#                         current = current.next
+#                         new_table.put(current.key, current.value)
+#         self.data = new_table.data
+#         self.capacity = new_table.capacity
