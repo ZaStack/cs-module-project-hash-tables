@@ -1,6 +1,15 @@
 def no_dups(s):
     # Your code here
+    words = s.split()
+    dups = dict()
+    unique = ''
 
+    for word in words:
+        if word not in dups:
+            dups[word] = 1
+            unique += f'{word} '
+
+    return unique.rstrip()
 
 
 if __name__ == "__main__":
