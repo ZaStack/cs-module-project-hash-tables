@@ -1,5 +1,20 @@
 def word_count(s):
     # Your code here
+    counts = dict()
+    lowercase = s.lower()
+    dont_count = '":;,.-+=/\|[]{}()*^&'
+    for char in lowercase:
+        if char in dont_count:
+            lowercase = lowercase.replace(char, '')
+
+    words = lowercase.split()
+
+    for word in words:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+    return counts
 
 
 
